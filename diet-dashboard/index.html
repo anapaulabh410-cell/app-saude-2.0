@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NutriFlow - Monitor de Dieta, Peso, Treinos, Evolução & Detox</title>
+  
+  <!-- Favicon / Apple Touch Icon -->
+  <meta name="theme-color" content="#2F5F5C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ==========================================
+         SIDEBAR (DESKTOP / TABLET - VERDE ESCURO #2F5F5C)
+         ========================================== -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand-header">
+          <div class="brand-logo">
+            <i class="fa-solid fa-leaf"></i>
+          </div>
+          <div class="brand-title">
+            <h2>NutriFlow</h2>
+            <span>Diet & Detox App</span>
+          </div>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item active" data-target="dashboard-view">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </li>
+          <li class="nav-item" data-target="dietplan-view">
+            <i class="fa-solid fa-utensils"></i>
+            <span>Dieta & Trocas</span>
+          </li>
+          <li class="nav-item" data-target="workout-view">
+            <i class="fa-solid fa-dumbbell"></i>
+            <span>Treinos & Medidas</span>
+          </li>
+          <li class="nav-item" data-target="evolution-view">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Evolução Corporal</span>
+          </li>
+          <li class="nav-item" data-target="scanner-view">
+            <i class="fa-solid fa-qrcode"></i>
+            <span>Escâner & Leitor IA</span>
+          </li>
+          <li class="nav-item" data-target="detox-view">
+            <i class="fa-solid fa-spa"></i>
+            <span>Protocolo Detox</span>
+          </li>
+          <li class="nav-item" data-target="anamnese-view">
+            <i class="fa-solid fa-notes-medical"></i>
+            <span>Anamnese & Saúde</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- User Profile Box -->
+      <div class="user-profile">
+        <div class="user-avatar" id="user-avatar-display">AP</div>
+        <div class="user-info">
+          <h4 id="user-name-display">Ana Paula</h4>
+          <p id="user-goal-display">Meta: Emagrecimento</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================
+         MAIN CONTENT AREA
+         ========================================== -->
+    <main class="main-content">
+      
+      <!-- Mobile Top Bar (Exclusivo para Android & iOS - Respeita Safe Area) -->
+      <div class="mobile-top-bar">
+        <div class="mobile-brand">
+          <div class="brand-logo" style="width:36px; height:36px; font-size:18px;">
+            <i class="fa-solid fa-leaf"></i>
+          </div>
+          <div style="display:flex; flex-direction:column;">
+            <span style="font-weight:800; font-size:18px; color:var(--dark-text); line-height:1.1;">NutriFlow</span>
+            <span style="font-size:11px; color:var(--primary-green); font-weight:700;" id="mobile-user-name">Ana Paula</span>
+          </div>
+        </div>
+        <div class="mobile-top-actions">
+          <button class="btn btn-secondary btn-sm" id="btn-mobile-top-weight">
+            <i class="fa-solid fa-weight-scale"></i>
+            <span>+ Peso</span>
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-mobile-top-scan">
+            <i class="fa-solid fa-camera"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dedicated Mobile Quick Actions Bar -->
+      <div class="mobile-quick-actions">
+        <button class="btn btn-secondary" id="btn-mobile-quick-weight">
+          <i class="fa-solid fa-weight-scale"></i>
+          <span>+ Registrar Peso</span>
+        </button>
+        <button class="btn btn-primary" id="btn-mobile-quick-scan">
+          <i class="fa-solid fa-camera"></i>
+          <span>📷 Escanear Prato</span>
+        </button>
+      </div>
+
+      <!-- Desktop Top Header -->
+      <header class="top-header">
+        <div class="header-title">
+          <h1 id="page-title">Visão Geral da Dieta</h1>
+          <p id="page-subtitle">Acompanhe seu progresso, refeições e saúde em tempo real.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="btn-open-weight-modal">
+            <i class="fa-solid fa-weight-scale"></i>
+            <span>Registrar Peso</span>
+          </button>
+          <button class="btn btn-primary" id="btn-open-scanner-quick">
+            <i class="fa-solid fa-camera"></i>
+            <span>Escanear Prato</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- ==========================================
+           VIEW 1: DASHBOARD
+           ========================================== -->
+      <section id="dashboard-view" class="view-section active">
+        
+        <div class="stats-grid">
+          
+          <div class="glass-card stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Peso Atual</span>
+              <div class="stat-icon green"><i class="fa-solid fa-weight-hanging"></i></div>
+            </div>
+            <div>
+              <div class="stat-value"><span id="stat-current-weight">68.5</span> <span class="stat-unit">kg</span></div>
+              <p class="stat-unit">Meta: <span id="stat-goal-weight">62.0</span> kg (<span id="stat-weight-diff" style="color: var(--light-green); font-weight:700;">-6.5 kg</span>)</p>
+            </div>
+            <div class="stat-progress">
+              <div class="stat-progress-bar fill-fiber" id="weight-progress-bar" style="width: 65%;"></div>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Calorias Hoje</span>
+              <div class="stat-icon orange"><i class="fa-solid fa-fire"></i></div>
+            </div>
+            <div>
+              <div class="stat-value"><span id="stat-calories-consumed">1240</span> <span class="stat-unit">/ 1800</span></div>
+              <p class="stat-unit">Restantes: <span id="stat-calories-left" style="font-weight:700; color:var(--orange);">560 kcal</span></p>
+            </div>
+            <div class="stat-progress">
+              <div class="stat-progress-bar fill-protein" id="calorie-progress-bar" style="width: 68%;"></div>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Hidratação</span>
+              <div class="stat-icon yellow"><i class="fa-solid fa-droplet"></i></div>
+            </div>
+            <div>
+              <div class="stat-value"><span id="stat-water-consumed">1750</span> <span class="stat-unit">/ 2500ml</span></div>
+              <p class="stat-unit">Faltam: <span id="stat-water-left">750 ml</span></p>
+            </div>
+            <div class="stat-progress">
+              <div class="stat-progress-bar fill-carbs" id="water-progress-bar" style="width: 70%;"></div>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-header">
+              <span class="stat-title">Diagnóstico IMC</span>
+              <div class="stat-icon purple"><i class="fa-solid fa-heart-pulse"></i></div>
+            </div>
+            <div>
+              <div class="stat-value"><span id="stat-bmi-value">23.7</span></div>
+              <p class="stat-unit" style="color: var(--light-green); font-weight:700;" id="stat-bmi-status">Eutrófico (Saudável)</p>
+            </div>
+            <div class="stat-progress">
+              <div class="stat-progress-bar fill-fat" style="width: 50%;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+          
+          <div class="glass-card">
+            <div class="chart-header">
+              <h3>Evolução de Peso</h3>
+              <span style="font-size: 13px; color: var(--text-muted);">Histórico Recente</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="weightChart"></canvas>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="chart-header">
+              <h3>Macronutrientes Hoje</h3>
+              <i class="fa-solid fa-chart-pie" style="color: var(--mustard-yellow);"></i>
+            </div>
+            
+            <div class="macro-item">
+              <div class="macro-info">
+                <span>Proteínas</span>
+                <span><strong id="macro-protein-val">85g</strong> / 120g</span>
+              </div>
+              <div class="macro-bar">
+                <div class="macro-fill fill-protein" id="macro-protein-bar" style="width: 70%;"></div>
+              </div>
+            </div>
+
+            <div class="macro-item">
+              <div class="macro-info">
+                <span>Carboidratos</span>
+                <span><strong id="macro-carbs-val">130g</strong> / 180g</span>
+              </div>
+              <div class="macro-bar">
+                <div class="macro-fill fill-carbs" id="macro-carbs-bar" style="width: 72%;"></div>
+              </div>
+            </div>
+
+            <div class="macro-item">
+              <div class="macro-info">
+                <span>Gorduras</span>
+                <span><strong id="macro-fat-val">42g</strong> / 60g</span>
+              </div>
+              <div class="macro-bar">
+                <div class="macro-fill fill-fat" id="macro-fat-bar" style="width: 70%;"></div>
+              </div>
+            </div>
+
+            <div class="macro-item">
+              <div class="macro-info">
+                <span>Fibras</span>
+                <span><strong id="macro-fiber-val">22g</strong> / 30g</span>
+              </div>
+              <div class="macro-bar">
+                <div class="macro-fill fill-fiber" id="macro-fiber-bar" style="width: 73%;"></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 12px; display:flex; justify-content:space-between; align-items:center;">
+                <span>Refeições do Dia</span>
+                <button class="btn btn-outline" id="btn-add-meal-manual" style="padding: 4px 12px; font-size:12px;">+ Refeição</button>
+              </h4>
+              <div class="meal-feed" id="daily-meal-feed">
+                <!-- Dynamic Meals Inserted via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="sos-banner">
+          <div class="sos-text">
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Exagerou na comida ou saiu da dieta?</h3>
+            <p>Ative agora o Protocolo de Desinflamação Organismo & Detox para eliminar retenção hídrica e inchaço.</p>
+          </div>
+          <button class="btn btn-secondary" id="btn-activate-detox-quick" style="white-space: nowrap;">
+            <i class="fa-solid fa-spa"></i>
+            <span>Iniciar Detox SOS</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+           VIEW 2: MEU PLANO ALIMENTAR & SUBSTITUIÇÕES
+           ========================================== -->
+      <section id="dietplan-view" class="view-section">
+        
+        <div style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px; overflow-x: auto;">
+          <button class="btn btn-secondary" id="tab-btn-myplan">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Minha Dieta Cadastrada</span>
+          </button>
+          <button class="btn btn-outline" id="tab-btn-calculator">
+            <i class="fa-solid fa-calculator"></i>
+            <span>Calculadora de Trocas & Substitutos</span>
+          </button>
+        </div>
+
+        <div id="subview-myplan">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h2 style="font-size: 22px; font-weight: 800; color: var(--primary-green);">Plano Alimentar Prescrito</h2>
+              <p style="font-size: 14px; color: var(--text-muted);">Consulte suas refeições programadas e marque quando consumi-las.</p>
+            </div>
+            <button class="btn btn-outline" id="btn-open-edit-diet-modal">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Editar Dieta</span>
+            </button>
+          </div>
+
+          <div class="diet-meals-list" id="diet-meals-container">
+            <!-- Dynamic Diet Cards Rendered via JS -->
+          </div>
+        </div>
+
+        <div id="subview-calculator" style="display: none;">
+          
+          <div class="glass-card" style="margin-bottom: 24px;">
+            <h2 style="font-size: 22px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px;">
+              <i class="fa-solid fa-right-left" style="color: var(--orange);"></i> Calculadora de Equivalência Nutricional
+            </h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+              Calcule a porção exata para substituir qualquer alimento da sua dieta sem alterar suas calorias e macronutrientes!
+            </p>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Alimento da sua Dieta (Original)</label>
+                <select class="form-control" id="calc-original-food">
+                  <option value="frango">Peito de Frango Grelhado</option>
+                  <option value="patinho">Patinho Moído (Carne Bovina)</option>
+                  <option value="tilapia">Filé de Tilápia Assado</option>
+                  <option value="ovos">Ovo de Galinha Cozido</option>
+                  <option value="arroz">Arroz Integral Cozido</option>
+                  <option value="batatadoce">Batata Doce Cozida</option>
+                  <option value="tapioca">Massa de Tapioca</option>
+                  <option value="aveia">Farinha de Aveia</option>
+                  <option value="banana">Banana Prata</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Quantidade na Dieta (gramas ou unidades)</label>
+                <input type="number" class="form-control" id="calc-original-qty" value="100">
+              </div>
+
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Quero Substituir por qual Alimento?</label>
+                <select class="form-control" id="calc-substitute-food">
+                  <option value="tilapia" selected>Filé de Tilápia Grelhado</option>
+                  <option value="patinho">Patinho Moído</option>
+                  <option value="ovos">Ovos Cozidos</option>
+                  <option value="frango">Peito de Frango Grelhado</option>
+                  <option value="batatadoce">Batata Doce Cozida</option>
+                  <option value="arroz">Arroz Integral</option>
+                  <option value="mandioquinha">Mandioquinha / Baroa</option>
+                  <option value="pao">Pão Integral (Fatias)</option>
+                  <option value="maca">Maçã Vermelha</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="equivalence-result-card" style="background: rgba(47, 95, 92, 0.08); border: 2px dashed var(--primary-green); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-top: 14px;">
+              <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Troca Equivalente Recomendada</span>
+              <h3 id="eq-result-text" style="font-size: 22px; font-weight: 800; color: var(--primary-green); margin-top: 6px;">
+                100g de Peito de Frango ➔ 115g de Filé de Tilápia
+              </h3>
+              <p id="eq-result-details" style="font-size: 13px; color: var(--dark-text); margin-top: 6px;">
+                Ambas as porções contêm aprox. 165 kcal e 31g de proteína.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="font-weight: 800; font-size: 18px;">Minha Lista de Substitutos Salvos</h3>
+              <button class="btn btn-outline" id="btn-open-add-sub-modal" style="padding: 6px 14px; font-size: 13px;">+ Novo Substituto</button>
+            </div>
+
+            <div class="substitutions-list" id="substitutions-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+           VIEW 3: TREINOS DE ACADEMIA & MEDIDAS CORPORAIS
+           ========================================== -->
+      <section id="workout-view" class="view-section">
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px; overflow-x: auto;">
+          <button class="btn btn-secondary" id="tab-btn-gym">
+            <i class="fa-solid fa-dumbbell"></i>
+            <span>Ficha de Musculação</span>
+          </button>
+          <button class="btn btn-outline" id="tab-btn-cardio">
+            <i class="fa-solid fa-person-running"></i>
+            <span>Exercícios Cardio</span>
+          </button>
+          <button class="btn btn-outline" id="tab-btn-measures">
+            <i class="fa-solid fa-ruler-combined"></i>
+            <span>Medidas Corporais</span>
+          </button>
+        </div>
+
+        <div id="subview-gym">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <div>
+              <h2 style="font-size: 22px; font-weight: 800; color: var(--primary-green);">Ficha de Musculação Semanal</h2>
+              <p style="font-size: 14px; color: var(--text-muted);">Monte seu treino personalizado, ajuste cargas e veja o gasto calórico total do dia.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-add-custom-exercise">
+              <i class="fa-solid fa-plus"></i> + Adicionar Exercício
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px;">
+            <button class="chip selected" data-day="segunda">Segunda</button>
+            <button class="chip" data-day="terca">Terça</button>
+            <button class="chip" data-day="quarta">Quarta</button>
+            <button class="chip" data-day="quinta">Quinta</button>
+            <button class="chip" data-day="sexta">Sexta</button>
+            <button class="chip" data-day="sabado">Sábado</button>
+            <button class="chip" data-day="domingo">Domingo</button>
+          </div>
+
+          <div class="glass-card" style="margin-bottom: 20px; background: linear-gradient(135deg, var(--primary-green), #1b3d3b); color: var(--white);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--mustard-yellow);" id="workout-day-label">Segunda-feira</span>
+                <h3 style="font-size: 22px; font-weight: 800; color: var(--white); margin-top: 2px;" id="workout-group-title">Membros Inferiores & Glúteos</h3>
+              </div>
+              
+              <div style="display: flex; gap: 20px; align-items: center;">
+                <div style="text-align: right;">
+                  <span style="font-size: 22px; font-weight: 800; color: var(--orange);" id="workout-total-cals">380 kcal</span>
+                  <p style="font-size: 11px; opacity: 0.85;">Gasto Calórico Estimado</p>
+                </div>
+                <div style="text-align: right; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 16px;">
+                  <span style="font-size: 22px; font-weight: 800; color: var(--mustard-yellow);" id="workout-completed-count">0 / 5</span>
+                  <p style="font-size: 11px; opacity: 0.85;">Concluídos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;" id="exercise-list-container">
+            <!-- Rendered dynamically via JS -->
+          </div>
+
+        </div>
+
+        <div id="subview-cardio" style="display: none;">
+          
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+            
+            <div class="glass-card">
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--primary-green); margin-bottom: 14px;">
+                <i class="fa-solid fa-heart-pulse" style="color: var(--orange);"></i> Registrar Sessão de Cardio
+              </h3>
+
+              <form id="form-add-cardio">
+                <div class="form-group">
+                  <label>Modalidade de Cardio</label>
+                  <select class="form-control" id="cardio-type">
+                    <option value="Esteira / Corrida">Esteira / Corrida de Rua</option>
+                    <option value="Bicicleta Ergométrica">Bicicleta Ergométrica</option>
+                    <option value="Elíptico">Elíptico / Transport</option>
+                    <option value="Caminhada Rápida">Caminhada Rápida</option>
+                    <option value="Natação">Natação</option>
+                    <option value="Pula Corda">Pula Corda</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Duração (minutos)</label>
+                  <input type="number" class="form-control" id="cardio-duration" placeholder="Ex: 35" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Distância Percorrida (km)</label>
+                  <input type="number" step="0.1" class="form-control" id="cardio-distance" placeholder="Ex: 4.5">
+                </div>
+
+                <div class="form-group">
+                  <label>Calorias Queimadas (Estimada kcal)</label>
+                  <input type="number" class="form-control" id="cardio-calories" placeholder="Ex: 280" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                  <i class="fa-solid fa-plus-circle"></i> Salvar Cardio
+                </button>
+              </form>
+            </div>
+
+            <div class="glass-card">
+              <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Resumo da Semana & Histórico</h3>
+
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+                <div style="background: rgba(47, 95, 92, 0.08); padding: 14px; border-radius: var(--radius-md); text-align: center;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Tempo Acumulado</span>
+                  <h4 style="font-size: 22px; font-weight: 800; color: var(--primary-green);" id="cardio-total-time">125 min</h4>
+                </div>
+
+                <div style="background: rgba(255, 122, 69, 0.08); padding: 14px; border-radius: var(--radius-md); text-align: center;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Gasto Calórico</span>
+                  <h4 style="font-size: 22px; font-weight: 800; color: var(--orange);" id="cardio-total-cals">980 kcal</h4>
+                </div>
+
+                <div style="background: rgba(232, 184, 79, 0.12); padding: 14px; border-radius: var(--radius-md); text-align: center;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Sessões Feitas</span>
+                  <h4 style="font-size: 22px; font-weight: 800; color: var(--mustard-yellow-hover);" id="cardio-total-sessions">4 sessões</h4>
+                </div>
+              </div>
+
+              <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 10px;">Sessões Recentes</h4>
+              <div id="cardio-history-container" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div id="subview-measures" style="display: none;">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h2 style="font-size: 22px; font-weight: 800; color: var(--primary-green);">Medidas Corporais & Evolução</h2>
+              <p style="font-size: 14px; color: var(--text-muted);">Acompanhe a redução de centímetros e ganho de massa magra.</p>
+            </div>
+            <button class="btn btn-secondary" id="btn-open-measure-modal">
+              <i class="fa-solid fa-ruler"></i>
+              <span>+ Registrar Medidas</span>
+            </button>
+          </div>
+
+          <div class="stats-grid" style="margin-bottom: 24px;">
+            <div class="glass-card stat-card">
+              <span class="stat-title">Cintura</span>
+              <div class="stat-value"><span id="measure-waist">72.0</span> <span class="stat-unit">cm</span></div>
+              <p class="stat-unit" style="color: var(--light-green); font-weight:700;" id="diff-waist">-3.5 cm</p>
+            </div>
+
+            <div class="glass-card stat-card">
+              <span class="stat-title">Quadril</span>
+              <div class="stat-value"><span id="measure-hip">98.5</span> <span class="stat-unit">cm</span></div>
+              <p class="stat-unit" style="color: var(--light-green); font-weight:700;" id="diff-hip">-2.0 cm</p>
+            </div>
+
+            <div class="glass-card stat-card">
+              <span class="stat-title">Coxa</span>
+              <div class="stat-value"><span id="measure-thigh">56.0</span> <span class="stat-unit">cm</span></div>
+              <p class="stat-unit" style="color: var(--mustard-yellow-hover); font-weight:700;" id="diff-thigh">+1.2 cm (Tônus)</p>
+            </div>
+
+            <div class="glass-card stat-card">
+              <span class="stat-title">Braço</span>
+              <div class="stat-value"><span id="measure-arm">28.5</span> <span class="stat-unit">cm</span></div>
+              <p class="stat-unit" style="color: var(--light-green); font-weight:700;" id="diff-arm">-1.0 cm</p>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h3 style="font-weight: 800; font-size: 18px; margin-bottom: 16px;">Histórico Completo de Medidas</h3>
+            
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+                <thead>
+                  <tr style="border-bottom: 2px solid rgba(0,0,0,0.08); color: var(--text-muted);">
+                    <th style="padding: 10px;">Data</th>
+                    <th style="padding: 10px;">Cintura</th>
+                    <th style="padding: 10px;">Quadril</th>
+                    <th style="padding: 10px;">Coxa</th>
+                    <th style="padding: 10px;">Braço</th>
+                    <th style="padding: 10px;">Peitoral</th>
+                  </tr>
+                </thead>
+                <tbody id="measures-history-tbody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+           VIEW 4: EVOLUÇÃO CORPORAL & RESULTADOS (NOVO MÓDULO DEDICADO)
+           ========================================== -->
+      <section id="evolution-view" class="view-section">
+        
+        <!-- Summary Transformation Banner Cards -->
+        <div class="stats-grid" style="margin-bottom: 24px;">
+          
+          <div class="glass-card stat-card" style="background: linear-gradient(135deg, rgba(76,175,80,0.12), rgba(255,255,255,0.9));">
+            <div class="stat-header">
+              <span class="stat-title">Total de Peso Eliminado</span>
+              <div class="stat-icon green"><i class="fa-solid fa-arrow-trend-down"></i></div>
+            </div>
+            <div>
+              <div class="stat-value" style="color: var(--light-green);" id="evo-weight-loss">-2.7 kg</div>
+              <p class="stat-unit">Desde a Anamnese Inicial</p>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card" style="background: linear-gradient(135deg, rgba(232,184,79,0.15), rgba(255,255,255,0.9));">
+            <div class="stat-header">
+              <span class="stat-title">Redução de Cintura</span>
+              <div class="stat-icon yellow"><i class="fa-solid fa-ruler-horizontal"></i></div>
+            </div>
+            <div>
+              <div class="stat-value" style="color: var(--mustard-yellow-hover);" id="evo-waist-loss">-3.5 cm</div>
+              <p class="stat-unit">De 75.5 cm ➔ 72.0 cm</p>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card" style="background: linear-gradient(135deg, rgba(255,122,69,0.12), rgba(255,255,255,0.9));">
+            <div class="stat-header">
+              <span class="stat-title">Sequência no Foco</span>
+              <div class="stat-icon orange"><i class="fa-solid fa-fire-flame-curved"></i></div>
+            </div>
+            <div>
+              <div class="stat-value" style="color: var(--orange);">12 Dias</div>
+              <p class="stat-unit">Fogo de Consistência 🔥</p>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card" style="background: linear-gradient(135deg, rgba(156,39,176,0.12), rgba(255,255,255,0.9));">
+            <div class="stat-header">
+              <span class="stat-title">Treinos Executados</span>
+              <div class="stat-icon purple"><i class="fa-solid fa-dumbbell"></i></div>
+            </div>
+            <div>
+              <div class="stat-value" style="color: var(--purple);">18 Sessões</div>
+              <p class="stat-unit">Musculação + Cardio</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Comparative Chart of Perimetry Measurements -->
+        <div class="glass-card" style="margin-bottom: 24px;">
+          <div class="chart-header">
+            <div>
+              <h3 style="font-size: 20px; font-weight: 800; color: var(--primary-green);">Evolução das Medidas Corporais (cm)</h3>
+              <p style="font-size: 13px; color: var(--text-muted);">Acompanhe a redução de medidas da Cintura, Quadril e Braço ao longo das semanas.</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="measuresChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Visual Progress Photos (Antes & Depois) -->
+        <div class="glass-card" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <div>
+              <h3 style="font-size: 20px; font-weight: 800; color: var(--primary-green);">Galeria de Transformação Visual (Antes & Depois)</h3>
+              <p style="font-size: 13px; color: var(--text-muted);">Compare suas fotos corporais para enxergar o resultado real.</p>
+            </div>
+            <div>
+              <button class="btn btn-outline" id="btn-upload-before">Upload "Antes"</button>
+              <button class="btn btn-primary" id="btn-upload-after">Upload "Atual"</button>
+              <input type="file" id="input-photo-before" accept="image/*" style="display:none;">
+              <input type="file" id="input-photo-after" accept="image/*" style="display:none;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="background: rgba(0,0,0,0.03); border: 2px dashed rgba(0,0,0,0.12); border-radius: var(--radius-lg); height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; text-align: center; padding: 14px;">
+              <img id="img-preview-before" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" alt="Foto Antes">
+              <div id="ph-before">
+                <i class="fa-solid fa-camera" style="font-size: 40px; color: var(--text-muted); margin-bottom: 10px;"></i>
+                <h4 style="font-size: 16px; font-weight: 700;">Foto Inicial (Antes)</h4>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Clique em "Upload Antes" para selecionar</p>
+              </div>
+            </div>
+
+            <div style="background: rgba(76, 175, 80, 0.05); border: 2px dashed var(--light-green); border-radius: var(--radius-lg); height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; text-align: center; padding: 14px;">
+              <img id="img-preview-after" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" alt="Foto Atual">
+              <div id="ph-after">
+                <i class="fa-solid fa-sparkles" style="font-size: 40px; color: var(--mustard-yellow); margin-bottom: 10px;"></i>
+                <h4 style="font-size: 16px; font-weight: 700; color: var(--primary-green);">Foto Atual (Depois)</h4>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Clique em "Upload Atual" para ver o resultado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges & Achievements Section -->
+        <div class="glass-card">
+          <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">🏆 Minhas Conquistas Desbloqueadas</h3>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+            <div style="background: var(--white); border-radius: var(--radius-md); padding: 16px; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(232, 184, 79, 0.2); color: var(--mustard-yellow-hover); display: flex; align-items: center; justify-content: center; font-size: 20px;">🥇</div>
+              <div>
+                <h4 style="font-size: 14px; font-weight: 700;">Primeiro Passo</h4>
+                <p style="font-size: 11px; color: var(--text-muted);">Completou 7 dias seguidos na meta calórica.</p>
+              </div>
+            </div>
+
+            <div style="background: var(--white); border-radius: var(--radius-md); padding: 16px; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 122, 69, 0.2); color: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 20px;">📉</div>
+              <div>
+                <h4 style="font-size: 14px; font-weight: 700;">Meta de Cintura</h4>
+                <p style="font-size: 11px; color: var(--text-muted);">Reduziu mais de 3cm de circunferência.</p>
+              </div>
+            </div>
+
+            <div style="background: var(--white); border-radius: var(--radius-md); padding: 16px; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(76, 175, 80, 0.2); color: var(--light-green); display: flex; align-items: center; justify-content: center; font-size: 20px;">🏋️</div>
+              <div>
+                <h4 style="font-size: 14px; font-weight: 700;">Foco na Academia</h4>
+                <p style="font-size: 11px; color: var(--text-muted);">Realizou 15+ treinos de musculação.</p>
+              </div>
+            </div>
+
+            <div style="background: var(--white); border-radius: var(--radius-md); padding: 16px; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(156, 39, 176, 0.2); color: var(--purple); display: flex; align-items: center; justify-content: center; font-size: 20px;">💧</div>
+              <div>
+                <h4 style="font-size: 14px; font-weight: 700;">Hidratação Nota 10</h4>
+                <p style="font-size: 11px; color: var(--text-muted);">Atingiu a meta de água durante 5 dias.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+           VIEW 5: SCANNER REAL DE REFEIÇÃO / CÂMERA
+           ========================================== -->
+      <section id="scanner-view" class="view-section">
+        <div class="scanner-container">
+          
+          <div class="glass-card">
+            <h3 style="margin-bottom: 8px; font-weight: 800;">Leitor Inteligente de Refeição</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+              Tire uma foto direta do prato usando a câmera do celular ou faça upload de uma imagem da galeria / QR Code.
+            </p>
+
+            <div class="scanner-viewfinder" id="scanner-viewfinder">
+              <div class="scan-laser"></div>
+              
+              <video id="camera-feed" autoplay playsinline style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);"></video>
+              <img id="captured-image-preview" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" alt="Foto do Prato" />
+              <canvas id="scanner-canvas" style="display:none;"></canvas>
+
+              <div id="camera-placeholder" style="display:flex; flex-direction:column; align-items:center;">
+                <i class="fa-solid fa-camera-retro" style="font-size: 48px; color: var(--mustard-yellow); margin-bottom: 14px;"></i>
+                <p style="font-weight: 600;" id="scanner-status-text">Câmera Pronta para Uso</p>
+                <span style="font-size: 12px; opacity: 0.8; margin-top: 6px;">Clique em "Abrir Câmera" ou faça upload de foto</span>
+              </div>
+            </div>
+
+            <div class="scanner-controls">
+              <button class="btn btn-primary" id="btn-start-camera" style="flex: 1;">
+                <i class="fa-solid fa-camera"></i>
+                <span>Abrir Câmera</span>
+              </button>
+              
+              <button class="btn btn-secondary" id="btn-capture-photo" style="display:none; flex: 1;">
+                <i class="fa-solid fa-circle-dot"></i>
+                <span>Fotografar Prato</span>
+              </button>
+              
+              <button class="btn btn-outline" id="btn-upload-photo" style="flex: 1;">
+                <i class="fa-solid fa-upload"></i>
+                <span>Upload Foto / QR</span>
+              </button>
+              
+              <input type="file" id="file-input-photo" accept="image/*" capture="environment" style="display:none;">
+            </div>
+
+          </div>
+
+          <div class="glass-card" id="scanner-result-panel">
+            <h3 style="margin-bottom: 16px; font-weight: 800;">Resultado da Análise Nutricional</h3>
+            
+            <div id="scanner-placeholder" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+              <i class="fa-solid fa-utensils" style="font-size: 44px; margin-bottom: 14px; opacity: 0.4;"></i>
+              <p>Nenhuma refeição analisada ainda. Abra a câmera ou envie uma foto para calcular os nutrientes.</p>
+            </div>
+
+            <div id="scanner-analysis-card" style="display: none;">
+              
+              <div class="result-verdict" id="verdict-banner">
+                <div class="verdict-icon" id="verdict-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                  <h4 id="verdict-title" style="font-size: 15px; font-weight: 700;">DENTRO DA DIETA</h4>
+                  <p id="verdict-desc" style="font-size: 13px;">Esta refeição se encaixa perfeitamente na sua meta calórica.</p>
+                  <div id="verdict-allergens"></div>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.03); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+                <h3 id="res-dish-name" style="font-size: 17px; color: var(--primary-green); font-weight: 800;">Refeição Analisada</h3>
+                <p id="res-dish-desc" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Análise efetuada com sucesso através da imagem enviada.</p>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <div style="padding: 10px; background: var(--white); border-radius: var(--radius-md); border:1px solid rgba(0,0,0,0.08);">
+                  <span style="font-size: 11px; color: var(--text-muted);">Calorias</span>
+                  <p style="font-size: 20px; font-weight: 800; color: var(--orange);" id="res-calories">0 kcal</p>
+                </div>
+                <div style="padding: 10px; background: var(--white); border-radius: var(--radius-md); border:1px solid rgba(0,0,0,0.08);">
+                  <span style="font-size: 11px; color: var(--text-muted);">Proteínas</span>
+                  <p style="font-size: 20px; font-weight: 800; color: var(--primary-green);" id="res-protein">0 g</p>
+                </div>
+                <div style="padding: 10px; background: var(--white); border-radius: var(--radius-md); border:1px solid rgba(0,0,0,0.08);">
+                  <span style="font-size: 11px; color: var(--text-muted);">Carboidratos</span>
+                  <p style="font-size: 20px; font-weight: 800; color: var(--mustard-yellow-hover);" id="res-carbs">0 g</p>
+                </div>
+                <div style="padding: 10px; background: var(--white); border-radius: var(--radius-md); border:1px solid rgba(0,0,0,0.08);">
+                  <span style="font-size: 11px; color: var(--text-muted);">Gorduras</span>
+                  <p style="font-size: 20px; font-weight: 800; color: var(--purple);" id="res-fat">0 g</p>
+                </div>
+              </div>
+
+              <button class="btn btn-primary" id="btn-add-scanned-to-dashboard" style="width: 100%;">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Adicionar ao Diário de Hoje</span>
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 6: PROTOCOLO DETOX & DESINFLAMAÇÃO
+           ========================================== -->
+      <section id="detox-view" class="view-section">
+        
+        <div class="detox-header">
+          <h2><i class="fa-solid fa-spa"></i> Protocolo SOS Detox & Desinflamação</h2>
+          <p style="margin-top: 6px; font-size: 14px; opacity: 0.9;">
+            Direcionado para dias de exagero na comida ou saídas da dieta. Siga o roteiro de 24h a 48h para eliminar retenção hídrica e restaurar seu metabolismo.
+          </p>
+        </div>
+
+        <div class="detox-grid">
+          
+          <div class="glass-card water-accelerator">
+            <h3 style="font-weight: 800; color: var(--primary-green);">Hidratação Acelerada (Detox)</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Meta emergencial: 3.500 ml no dia</p>
+
+            <div class="water-bottle">
+              <div class="water-fill" id="detox-water-fill" style="height: 45%;"></div>
+            </div>
+
+            <p style="font-size: 22px; font-weight: 800; color: var(--dark-text);"><span id="detox-water-val">1550</span> / 3500 ml</p>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 16px;">
+              <button class="btn btn-outline" id="btn-add-water-250">+ 250ml</button>
+              <button class="btn btn-secondary" id="btn-add-water-500">+ 500ml</button>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h3 style="margin-bottom: 16px; font-weight: 800; color: var(--dark-text);">Receitas Anti-inflamatórias</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="recipe-card">
+                <div class="recipe-icon"><i class="fa-solid fa-lemon"></i></div>
+                <div>
+                  <h4 style="font-size: 15px; font-weight: 700;">Shot Matinal Termogênico</h4>
+                  <p style="font-size: 13px; color: var(--text-muted);">Suco de 1 limão + 1 colher café de cúrcuma + 10 gotas de própolis verde + pitada de pimenta preta.</p>
+                  <span style="font-size: 11px; color: var(--light-green); font-weight:700;">Tomar em jejum ao acordar</span>
+                </div>
+              </div>
+
+              <div class="recipe-card">
+                <div class="recipe-icon"><i class="fa-solid fa-glass-water-droplet"></i></div>
+                <div>
+                  <h4 style="font-size: 15px; font-weight: 700;">Suco Verde Diurético Anti-Inchaço</h4>
+                  <p style="font-size: 13px; color: var(--text-muted);">2 folhas de couve + 1 fatia de abacaxi + 2cm de gengibre fresco + 200ml de água de coco.</p>
+                  <span style="font-size: 11px; color: var(--mustard-yellow-hover); font-weight:700;">Lanche da manhã ou tarde</span>
+                </div>
+              </div>
+
+              <div class="recipe-card">
+                <div class="recipe-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                <div>
+                  <h4 style="font-size: 15px; font-weight: 700;">Infusão de Hibisco com Cavalinha</h4>
+                  <p style="font-size: 13px; color: var(--text-muted);">1 colher sopa de hibisco + 1 colher sopa de cavalinha em 500ml de água quente. Não adoçar.</p>
+                  <span style="font-size: 11px; color: var(--orange); font-weight:700;">Consumir ao longo da tarde</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h3 style="margin-bottom: 16px; font-weight: 800;">Checklist de Recuperação 24h</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <label class="checkbox-card checked">
+                <input type="checkbox" checked disabled>
+                <span>1. Jejum fisiológico de 14h pós-jantar pesado</span>
+              </label>
+
+              <label class="checkbox-card">
+                <input type="checkbox" id="chk-shot">
+                <span>2. Tomar o Shot Matinal em Jejum</span>
+              </label>
+
+              <label class="checkbox-card">
+                <input type="checkbox" id="chk-water">
+                <span>3. Beber 1.5L de água até às 12h</span>
+              </label>
+
+              <label class="checkbox-card">
+                <input type="checkbox" id="chk-sugar">
+                <span>4. Cortar 100% de açúcares e ultraprocessados hoje</span>
+              </label>
+
+              <label class="checkbox-card">
+                <input type="checkbox" id="chk-walk">
+                <span>5. Caminhada leve de 30 min para ativar circulação</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 7: ANAMNESE ALIMENTAR & RESTRIÇÕES
+           ========================================== -->
+      <section id="anamnese-view" class="view-section">
+        
+        <div class="glass-card">
+          <h2 style="margin-bottom: 6px; font-weight: 800; color: var(--primary-green);">Anamnese Alimentar & Perfil de Saúde</h2>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
+            Preencha suas informações para que o escâner e as recomendações de dieta se adaptem automaticamente às suas restrições e objetivos.
+          </p>
+
+          <form id="anamnese-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" class="form-control" id="form-name" value="Ana Paula">
+              </div>
+
+              <div class="form-group">
+                <label>Objetivo Principal</label>
+                <select class="form-control" id="form-goal">
+                  <option value="Emagrecimento" selected>Emagrecimento / Queima de Gordura</option>
+                  <option value="Hipertrofia">Ganho de Massa (Hipertrofia)</option>
+                  <option value="Manutenção">Manutenção de Peso & Saúde</option>
+                  <option value="Desinflamação">Desinflamação Organismo & Detox</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Peso Atual (kg)</label>
+                <input type="number" step="0.1" class="form-control" id="form-current-weight" value="68.5">
+              </div>
+
+              <div class="form-group">
+                <label>Peso Meta (kg)</label>
+                <input type="number" step="0.1" class="form-control" id="form-goal-weight" value="62.0">
+              </div>
+
+              <div class="form-group">
+                <label>Altura (cm)</label>
+                <input type="number" class="form-control" id="form-height" value="170">
+              </div>
+
+              <div class="form-group">
+                <label>Meta Calórica Diária (kcal)</label>
+                <input type="number" class="form-control" id="form-calorie-target" value="1800">
+              </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--dark-text);">
+                Restrições Alimentares & Alergias (Filtro do Escâner)
+              </h3>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+                O escâner emitirá um alerta vermelho caso uma refeição contiver algum destes itens selecionados:
+              </p>
+
+              <div class="checkbox-grid">
+                <label class="checkbox-card" id="card-gluten">
+                  <input type="checkbox" id="restr-gluten" value="Glúten">
+                  <span>Intolerância ao Glúten</span>
+                </label>
+
+                <label class="checkbox-card" id="card-lactose">
+                  <input type="checkbox" id="restr-lactose" value="Lactose" checked>
+                  <span>Intolerância à Lactose</span>
+                </label>
+
+                <label class="checkbox-card" id="card-vegan">
+                  <input type="checkbox" id="restr-vegan" value="Carne">
+                  <span>Alimentação Vegana</span>
+                </label>
+
+                <label class="checkbox-card" id="card-peanuts">
+                  <input type="checkbox" id="restr-peanuts" value="Amendoim">
+                  <span>Alergia a Amendoim</span>
+                </label>
+
+                <label class="checkbox-card" id="card-seafood">
+                  <input type="checkbox" id="restr-seafood" value="Frutos do Mar">
+                  <span>Alergia a Frutos do Mar</span>
+                </label>
+
+                <label class="checkbox-card" id="card-diabetes">
+                  <input type="checkbox" id="restr-sugar" value="Açúcar">
+                  <span>Diabetes (Restrição Açúcar)</span>
+                </label>
+              </div>
+            </div>
+
+            <div style="margin-top: 30px; text-align: right;">
+              <button type="submit" class="btn btn-primary" style="padding: 14px 32px; width: 100%; max-width: 300px;">
+                <i class="fa-solid fa-save"></i>
+                <span>Salvar Perfil & Anamnese</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ==========================================
+       MOBILE BOTTOM NAVIGATION BAR (Android & iOS Style)
+       ========================================== -->
+  <nav class="mobile-nav">
+    <a href="#" class="mobile-nav-item active" data-target="dashboard-view">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" class="mobile-nav-item" data-target="dietplan-view">
+      <i class="fa-solid fa-utensils"></i>
+      <span>Dieta</span>
+    </a>
+    <a href="#" class="mobile-nav-item" data-target="workout-view">
+      <i class="fa-solid fa-dumbbell"></i>
+      <span>Treinos</span>
+    </a>
+    <a href="#" class="mobile-nav-item" data-target="evolution-view">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Evolução</span>
+    </a>
+    <a href="#" class="mobile-nav-item" data-target="scanner-view">
+      <i class="fa-solid fa-qrcode"></i>
+      <span>Scanner</span>
+    </a>
+  </nav>
+
+  <!-- ==========================================
+       MODALS
+       ========================================== -->
+
+  <!-- Modal Adicionar Novo Exercício de Musculação Personalizado -->
+  <div class="modal-overlay" id="modal-add-exercise">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Adicionar Exercício Personalizado</h3>
+        <button class="modal-close" id="close-modal-exercise">&times;</button>
+      </div>
+      <form id="form-add-exercise">
+        <div class="form-group">
+          <label>Nome do Exercício</label>
+          <input type="text" class="form-control" id="ex-name-input" placeholder="Ex: Leg Press 45°" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Séries & Repetições</label>
+            <input type="text" class="form-control" id="ex-details-input" placeholder="Ex: 4x12 repetições" required>
+          </div>
+          <div class="form-group">
+            <label>Carga / Peso (kg)</label>
+            <input type="text" class="form-control" id="ex-load-input" placeholder="Ex: 80 kg" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Gasto Calórico Estimado deste Exercício (kcal)</label>
+          <input type="number" class="form-control" id="ex-cals-input" placeholder="Ex: 75" value="70">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-exercise" style="flex:1;">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Salvar Exercício</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Registrar Medidas Corporais -->
+  <div class="modal-overlay" id="modal-measure">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Registrar Novas Medidas Corporais</h3>
+        <button class="modal-close" id="close-modal-measure">&times;</button>
+      </div>
+      <form id="form-add-measure">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Cintura (cm)</label>
+            <input type="number" step="0.5" class="form-control" id="input-waist" placeholder="72.0" required>
+          </div>
+          <div class="form-group">
+            <label>Quadril (cm)</label>
+            <input type="number" step="0.5" class="form-control" id="input-hip" placeholder="98.5" required>
+          </div>
+          <div class="form-group">
+            <label>Coxa (cm)</label>
+            <input type="number" step="0.5" class="form-control" id="input-thigh" placeholder="56.0">
+          </div>
+          <div class="form-group">
+            <label>Braço (cm)</label>
+            <input type="number" step="0.5" class="form-control" id="input-arm" placeholder="28.5">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Peitoral / Busto (cm)</label>
+            <input type="number" step="0.5" class="form-control" id="input-chest" placeholder="90.0">
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-measure" style="flex:1;">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Salvar Medidas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Modal Adicionar Novo Substituto Personalizado -->
+  <div class="modal-overlay" id="modal-add-sub">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Cadastrar Nova Opção de Substituição</h3>
+        <button class="modal-close" id="close-modal-add-sub">&times;</button>
+      </div>
+      <form id="form-add-substitute">
+        <div class="form-group">
+          <label>Alimento Original da Dieta</label>
+          <input type="text" class="form-control" id="sub-original" placeholder="Ex: 100g de Peito de Frango" required>
+        </div>
+        <div class="form-group">
+          <label>Alimento Substituto Recomendado</label>
+          <input type="text" class="form-control" id="sub-replacement" placeholder="Ex: 120g de Filé de Tilápia ou 3 Ovos" required>
+        </div>
+        <div class="form-group">
+          <label>Categoria do Alimento</label>
+          <select class="form-control" id="sub-category">
+            <option value="Proteínas">Proteínas</option>
+            <option value="Carboidratos">Carboidratos</option>
+            <option value="Gorduras">Gorduras</option>
+            <option value="Frutas & Doces">Frutas & Doces</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-add-sub" style="flex:1;">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Salvar Troca</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Registrar Peso -->
+  <div class="modal-overlay" id="modal-weight">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Registrar Novo Peso</h3>
+        <button class="modal-close" id="close-modal-weight">&times;</button>
+      </div>
+      <form id="form-add-weight">
+        <div class="form-group">
+          <label>Peso Medido Hoje (kg)</label>
+          <input type="number" step="0.1" class="form-control" id="input-new-weight" placeholder="Ex: 67.8" required>
+        </div>
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" class="form-control" id="input-weight-date" required>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-weight" style="flex:1;">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Adicionar Refeição Manual -->
+  <div class="modal-overlay" id="modal-meal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Adicionar Refeição Manual</h3>
+        <button class="modal-close" id="close-modal-meal">&times;</button>
+      </div>
+      <form id="form-add-meal">
+        <div class="form-group">
+          <label>Nome do Prato / Alimento</label>
+          <input type="text" class="form-control" id="meal-name" placeholder="Ex: Omelete com Espinafre" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Calorias (kcal)</label>
+            <input type="number" class="form-control" id="meal-calories" placeholder="320" required>
+          </div>
+          <div class="form-group">
+            <label>Proteínas (g)</label>
+            <input type="number" class="form-control" id="meal-protein" placeholder="25">
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-meal" style="flex:1;">Cancelar</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Salvar Refeição</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Application Logic Script -->
+  <script src="app.js"></script>
+</body>
+</html>
